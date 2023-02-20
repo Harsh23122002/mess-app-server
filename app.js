@@ -13,9 +13,10 @@ const url = process.env.DATABASE;
 
 mongoose.set('strictQuery', false);
 
+const port = process.env.PORT || 5000;
 mongoose.connect(url).then((result) => {
 
-    app.listen(5000);
+    app.listen(port);
     console.log("DB started and server hosted on port 5000");
 }).catch((err) => {
     console.log(err);
