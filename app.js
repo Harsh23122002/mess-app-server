@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require('mongoose');
-const dotenv = require ('dotenv');
+const dotenv = require('dotenv');
 dotenv.config(
     {
         path: './config.env'
@@ -13,9 +13,8 @@ const url = process.env.DATABASE;
 
 mongoose.set('strictQuery', false);
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT;
 mongoose.connect(url).then((result) => {
-
     app.listen(port);
     console.log("DB started and server hosted on port 5000");
 }).catch((err) => {
@@ -34,7 +33,8 @@ app.use('/users', userRoute);
 
 
 app.get('*', (req, res) => {
-    res.json({
-        "status": 404
-    })
+    res.status(400).json({
+        'status': 404
+    });
+
 });

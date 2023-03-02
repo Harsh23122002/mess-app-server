@@ -1,31 +1,60 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
+const bcrypt = require('bcrypt');
 
+// baseURL/users/
 router.get('/', async (req, res) => {
     try {
         const users = await User.find();
-        res.send(users);
+
+        const response = {
+            'status': 200,
+            'message': 'success',
+            'body': users
+        }
+        res.send(response);
     } catch (err) {
         res.send('Error ' + err);
     }
 });
 
-router.post('/', async (req, res) => {
-    try {
+// baseURL/users/register
+router.post('/register', async (req, res) => {
+
+
+    const { name, password, phone, email } = req.body;
+
+    bcrypt.hash(password, 10).then((hash) => {
         const temp1 = new User({
-            name: req.body.name,
-            password: req.body.password,
-            phone: req.body.phone,
-            email: req.body.email
+            name: name,
+            password: hash,
+            phone: phone,
+            email: email
         })
-        const a = await temp1.save();
+        User.create({ name, password: hash, phone, email }).then((result) => {
+            res.status(200).json({
+                'status': 200,
+                'message': 'success',
+                'body': result
+            })
+        }).catch((err) => {
+            console.log(err);
+            res.status(400).json({
+                'status': 400,
+                'message': err.message,
+                'body': err,
+            });
+        })
+            ;
 
-        res.send(a);
-    } catch (err) {
-        console.log(err);
-    }
+    });
 
+});
+
+// baseURL/users/login
+router.post('/login', (req, res) => {
+    const { email, password } = req.body;
 });
 
 module.exports = router;

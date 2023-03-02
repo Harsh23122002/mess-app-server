@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: false
     },
     password: {
         type: String,
@@ -11,15 +11,19 @@ const userSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true
+
     },
     phone: {
         type: String,
-        required: true
+        required: false
     },
 
 
 });
 
 
-module.exports = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
+User.createIndexes();
+module.exports = User;
