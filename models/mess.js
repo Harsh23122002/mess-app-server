@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({
+const messSchema = new mongoose.Schema({
     name: {
         type: String,
         required: false
@@ -19,15 +19,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: false
     },
-
-    subscriptions: {
-        type: Array
+    subscribers: {
+        type: []
     }
-
-
 });
 
-
-const User = mongoose.model('User', userSchema);
-User.createIndexes();
-module.exports = User;
+const Mess = mongoose.model('Mess', messSchema);
+Mess.createIndexes();
+module.exports = Mess;

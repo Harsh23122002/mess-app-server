@@ -1,17 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/user');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const Mess = require('../models/mess');
+const bycrypt = require('bcrypt');
 const { createToken } = require('../utils/createToken');
-const { user_login } = require('../controllers/userLogin');
-const { join_mess } = require('../controllers/joinMess');
+const { mess_login } = require('../controllers/messLogin');
 
-
-// baseURL/users/    GET
 router.get('/', async (req, res) => {
     try {
-        const users = await User.find();
+        const users = await Mess.find();
 
         const response = {
             'status': 200,
@@ -24,22 +20,13 @@ router.get('/', async (req, res) => {
     }
 });
 
-// baseURL/users/register   POST
+
 router.post('/register', async (req, res) => {
 
+    const { name, email, password, location, phone } = req.body;
 
-    const { name, password, phone, email } = req.body;
-
-    bcrypt.hash(password, 10).then((hash) => {
-        const user = new User({
-            name: name,
-            password: hash,
-            phone: phone,
-            email: email
-        });
-
-
-        User.create({ name, password: hash, phone, email }).then((result) => {
+    bycrypt.hash(password, 10).then((hash) => {
+        Mess.create({ name, email, password: hash, location, phone }).then((result) => {
             let token = createToken(result._id);
 
             if (token == 0) {
@@ -64,19 +51,12 @@ router.post('/register', async (req, res) => {
                 'message': err.message,
                 'body': err,
             });
-        })
-            ;
 
+        });
     });
-
 });
 
 
-// baseURL/users/login     POST
-router.post('/login', user_login);
-
-
-// baseURL/users/joinmess     POST
-router.post('/joinmess', join_mess);
+router.post('/login', mess_login);
 
 module.exports = router;
